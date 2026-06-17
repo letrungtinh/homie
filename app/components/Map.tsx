@@ -3,18 +3,20 @@
 import { useEffect } from "react";
 import L from "leaflet";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { FaHome, FaMapMarkerAlt } from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
 
 interface MapProps {
   center?: number[];
+  label?: string;
 }
 
 const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 const attribution =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 
-const Map: React.FC<MapProps> = ({ center }) => {
+const Map: React.FC<MapProps> = ({ center, label }) => {
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -28,19 +30,45 @@ const Map: React.FC<MapProps> = ({ center }) => {
     });
   }, []);
 
-  return (
-    <MapContainer
-      center={(center as L.LatLngExpression) || [16.0471, 108.2068]}
-      zoom={center ? 8 : 5}
-      scrollWheelZoom={false}
-      className="h-[35vh] rounded-lg"
-    >
-      <TileLayer url={url} attribution={attribution} />
+  const customIcon = L.divIcon({
+    className: "custom-marker",
+    html: `
+      <div class="w-12 h-12 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-lg border-4 border-white">
+        <span style="font-size: 20px;">⌂</span>
+      </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+  });
 
-      {center && (
-        <Marker position={center as L.LatLngExpression} />
+  return (
+    <div className="relative h-[42vh] w-full rounded-3xl overflow-hidden bg-neutral-100">
+      {label && (
+        <div className="absolute top-4 left-4 right-4 z-[999] bg-white rounded-full shadow-md px-6 py-4 flex items-center gap-3 text-sm text-neutral-700">
+          <FaMapMarkerAlt className="text-neutral-800" />
+          <span className="truncate">{label}</span>
+        </div>
       )}
-    </MapContainer>
+
+      <MapContainer
+        center={(center as L.LatLngExpression) || [16.0471, 108.2068]}
+        zoom={center ? 13 : 5}
+        scrollWheelZoom={false}
+        zoomControl={true}
+        className="h-full w-full"
+      >
+        <TileLayer url={url} attribution={attribution} />
+
+        {center && (
+          <Marker
+            position={center as L.LatLngExpression}
+            icon={customIcon}
+          />
+        )}
+      </MapContainer>
+
+  
+    </div>
   );
 };
 

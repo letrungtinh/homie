@@ -49,7 +49,7 @@ const RentModal = () => {
       roomCount: 1,
       bathroomCount: 1,
       imageSrc: "",
-      price: 1,
+      price: 100000,
       title: "",
       description: "",
     },
@@ -61,7 +61,6 @@ const RentModal = () => {
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
   const imageSrc = watch("imageSrc");
-
 
   const Map = useMemo(
     () =>
@@ -224,33 +223,33 @@ const RentModal = () => {
     );
   }
 
-  // //    if (step === STEPS.DESCRIPTION) {
-  // //       bodyContent = (
-  // //          <div className="flex flex-col gap-8">
-  // //             <Heading
-  // //                title="How would you describe your place?"
-  // //                subtitle="Short and sweet works best!"
-  // //             />
-  // //             <Input
-  // //                id="title"
-  // //                label="Title"
-  // //                disabled={isLoading}
-  // //                register={register}
-  // //                errors={errors}
-  // //                required
-  // //             />
-  // //             <hr />
-  // //             <Input
-  // //                id="description"
-  // //                label="Description"
-  // //                disabled={isLoading}
-  // //                register={register}
-  // //                errors={errors}
-  // //                required
-  // //             />
-  // //          </div>
-  // //       );
-  //    }
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Bạn sẽ mô tả chỗ ở của mình như thế nào?"
+          subtitle="Ngắn gọn, súc tích và dễ hiểu là tốt nhất!"
+        />
+        <Input
+          id="title"
+          label="Tiêu đề"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <hr />
+        <Input
+          id="description"
+          label="Mô tả"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    );
+  }
 
   if (step === STEPS.PRICE) {
     bodyContent = (
@@ -261,7 +260,7 @@ const RentModal = () => {
         />
         <Input
           id="price"
-          label="Price"
+          label="Giá thuê"
           formatPrice
           type="number"
           disabled={isLoading}
@@ -269,6 +268,7 @@ const RentModal = () => {
           errors={errors}
           required
         />
+      
       </div>
     );
   }
