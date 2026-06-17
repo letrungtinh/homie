@@ -1,0 +1,46 @@
+{
+  "name": "homiee",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@prisma/client": "^5.22.0",
+    "@ynm/location-resolver": "^1.2.8",
+    "axios": "^1.16.1",
+    "bcrypt": "^6.0.0",
+    "leaflet": "^1.9.4",
+    "next": "16.2.4",
+    "next-auth": "^4.24.14",
+    "next-cloudinary": "^6.17.5",
+    "query-string": "^9.4.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.76.0",
+    "react-hot-toast": "^2.6.0",
+    "react-icons": "^5.6.0",
+    "react-leaflet": "^5.0.0",
+    "react-select": "^5.10.2",
+    "vietnam-provinces": "^0.0.4",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/bcrypt": "^6.0.0",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-select": "^5.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "prisma": "^5.22.0",
+    "tailwind": "^4.0.0",
+    "typescript": "^5"
+  }
+}
