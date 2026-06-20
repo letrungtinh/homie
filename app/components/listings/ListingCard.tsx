@@ -5,6 +5,7 @@ import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import Image from "next/image";
 import HeartButton from "../HeartButton";
 import Button from "../Button";
@@ -60,7 +61,11 @@ const ListingCard: React.FC<ListingCardProps> = ({
     const start = new Date(reservation.startDate);
     const end = new Date(reservation.endDate);
 
-    return `${format(start, "PP")} - ${format(end, "PP")}`;
+    return `${format(start, "dd/MM/yyyy", { locale: vi })} - ${format(
+      end,
+      "dd/MM/yyyy",
+      { locale: vi }
+    )}`;
   }, [reservation]);
 
   return (

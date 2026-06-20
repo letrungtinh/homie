@@ -151,15 +151,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
               </>
             ) : (
               <>
-                <MenuItem
-                  onClick={loginModal.onOpen}
-                  label="Đăng nhập"
-                />
+                <MenuItem onClick={loginModal.onOpen} label="Đăng nhập" />
 
-                <MenuItem
-                  onClick={registerModal.onOpen}
-                  label="Đăng ký"
-                />
+                <MenuItem onClick={registerModal.onOpen} label="Đăng ký" />
               </>
             )}
           </div>

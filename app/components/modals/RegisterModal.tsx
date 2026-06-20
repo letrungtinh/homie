@@ -34,7 +34,9 @@ const RegisterModal = () => {
 
     axios.post("/api/register", data)
       .then(() => {
+        toast.success("Đăng ký tài khoản thành công!")
         registerModal.onClose();
+        loginModal.onOpen();
       })
       .catch((error) => {
         toast.error("Có lỗi xảy ra!");
