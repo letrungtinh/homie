@@ -15,6 +15,10 @@ import Counter from "../inputs/Counter";
 import LocationSelect, { LocationSelectValue } from "../inputs/LocationSelect";
 import Heading from "../Heading";
 
+const Map = dynamic(() => import("../Map"), {
+  ssr: false,
+});
+
 enum STEPS {
   LOCATION = 0,
   DATE = 1,
@@ -27,24 +31,16 @@ const SearchModal = () => {
   const params = useSearchParams();
 
   const [step, setStep] = useState(STEPS.LOCATION);
-
   const [location, setLocation] = useState<LocationSelectValue>();
   const [guestCount, setGuestCount] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
   const [bathroomCount, setBathroomCount] = useState(1);
+
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
-
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("../Map"), {
-        ssr: false,
-      }),
-    []
-  );
 
   const onBack = useCallback(() => {
     setStep((value) => value - 1);
@@ -59,13 +55,9 @@ const SearchModal = () => {
       return onNext();
     }
 
-    let currentQuery = {};
+    const currentQuery = params ? qs.parse(params.toString()) : {};
 
-    if (params) {
-      currentQuery = qs.parse(params.toString());
-    }
-
-    const updatedQuery: any = {
+    const updatedQuery: Record<string, string | number | undefined> = {
       ...currentQuery,
       locationValue: location?.value,
       guestCount,
@@ -99,9 +91,10 @@ const SearchModal = () => {
     router,
     guestCount,
     roomCount,
-    dateRange,
-    onNext,
     bathroomCount,
+    dateRange.startDate,
+    dateRange.endDate,
+    onNext,
     params,
   ]);
 
@@ -130,7 +123,7 @@ const SearchModal = () => {
 
       <LocationSelect
         value={location}
-        onChange={(value) => setLocation(value as LocationSelectValue)}
+        onChange={(value) => setLocation(value)}
       />
 
       <hr />
@@ -182,9 +175,7 @@ const SearchModal = () => {
         <hr />
 
         <Counter
-          onChange={(value) => {
-            setBathroomCount(value);
-          }}
+          onChange={(value) => setBathroomCount(value)}
           value={bathroomCount}
           title="Phòng tắm"
           subTitle="Bạn cần bao nhiêu phòng tắm?"
