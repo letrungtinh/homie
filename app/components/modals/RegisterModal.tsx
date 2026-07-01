@@ -30,21 +30,25 @@ const RegisterModal = () => {
     },
   });
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
+  setIsLoading(true);
 
-    axios.post("/api/register", data)
-      .then(() => {
-        toast.success("Đăng ký tài khoản thành công!")
-        registerModal.onClose();
-        loginModal.onOpen();
-      })
-      .catch((error) => {
-        toast.error("Có lỗi xảy ra!");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+  axios
+    .post("/api/register", data)
+    .then(() => {
+      toast.success("Đăng ký tài khoản thành công!");
+      registerModal.onClose();
+    })
+    .catch((error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Đăng ký thất bại");
+      } else {
+        toast.error("Đăng ký thất bại");
+      }
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
 
   const onToggle = useCallback(() => {
       registerModal.onClose();
