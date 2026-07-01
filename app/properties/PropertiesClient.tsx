@@ -23,6 +23,14 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
 
   const onCancel = useCallback(
     (id: string) => {
+      const confirmed = window.confirm(
+        "Bạn có chắc chắn muốn xóa chỗ ở này không?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
       setDeletingId(id);
 
       axios

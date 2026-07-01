@@ -23,6 +23,14 @@ const TripsClient: React.FC<TripsClientProps> = ({
 
   const onCancel = useCallback(
     (id: string) => {
+      const confirmed = window.confirm(
+        "Bạn có chắc chắn muốn hủy đặt phòng này không?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
       setDeletingId(id);
 
       axios

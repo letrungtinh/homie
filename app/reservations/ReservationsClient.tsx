@@ -23,12 +23,20 @@ const ReservationsClient: React.FC<ReservationsClientProps> = ({
 
   const onCancel = useCallback(
     (id: string) => {
+      const confirmed = window.confirm(
+        "Bạn có chắc chắn muốn hủy đơn đặt phòng này không?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
       setDeletingId(id);
 
       axios
         .delete(`/api/reservations/${id}`)
         .then(() => {
-          toast.success("Đã hủy đặt phòng!");
+          toast.success("Đã hủy đơn đặt phòng!");
           router.refresh();
         })
         .catch(() => {
