@@ -64,7 +64,7 @@ const Home = async ({ searchParams }: HomeProps) => {
       <Container>
         <div className="pt-24 flex flex-col gap-12">
           <ListingSection
-            title="Nơi lưu trú tại Thành phố Hồ Chí Minh"
+            title="Nơi lưu trú được ưu chuộng tại Thành phố Hồ Chí Minh"
             listings={hcmListings}
             currentUser={currentUser}
           />
@@ -76,13 +76,13 @@ const Home = async ({ searchParams }: HomeProps) => {
           />
 
           <ListingSection
-            title="Nơi lưu trú tại Đà Nẵng"
+            title="Chỗ ở tại Đà Nẵng"
             listings={daNangListings}
             currentUser={currentUser}
           />
 
           <ListingSection
-            title="Nơi lưu trú tại Huế"
+            title="Còn phòng tại thành phố Huế vào tháng tới"
             listings={hueListings}
             currentUser={currentUser}
           />
@@ -91,5 +91,6 @@ const Home = async ({ searchParams }: HomeProps) => {
     </ClientOnly>
   );
 };
+
 
 export default Home;

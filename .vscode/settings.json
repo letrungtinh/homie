@@ -1,0 +1,10 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "Dracula Theme",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "continue.enableTabAutocomplete": true,
+  "editor.inlineSuggest.enabled": true,
+  "yaml.schemas": {}
+}
