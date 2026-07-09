@@ -6,6 +6,7 @@ import ClientOnly from "./components/ClientOnly";
 import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
+import ListingSection from "./components/listings/ListingSection";
 
 interface HomeProps {
   searchParams?: Promise<IListingParams>;
@@ -13,7 +14,7 @@ interface HomeProps {
 
 const Home = async ({ searchParams }: HomeProps) => {
   const params = await searchParams;
-
+  const isFiltered = Object.keys(params || {}).length > 0;
   const listings = await getListings(params || {});
   const currentUser = await getCurrentUser();
 
@@ -24,7 +25,7 @@ const Home = async ({ searchParams }: HomeProps) => {
       </ClientOnly>
     );
   }
-
+  if (isFiltered) {
   return (
     <ClientOnly>
       <Container>
@@ -36,6 +37,55 @@ const Home = async ({ searchParams }: HomeProps) => {
               currentUser={currentUser}
             />
           ))}
+        </div>
+      </Container>
+    </ClientOnly>
+  );
+}
+
+  const hcmListings = listings.filter(
+    (listing) => listing.locationValue === "tp-ho-chi-minh",
+  );
+
+  const haNoiListings = listings.filter(
+    (listing) => listing.locationValue === "ha-noi",
+  );
+
+  const daNangListings = listings.filter(
+    (listing) => listing.locationValue === "da-nang",
+  );
+
+  const hueListings = listings.filter(
+    (listing) => listing.locationValue === "hue",
+  );
+
+  return (
+    <ClientOnly>
+      <Container>
+        <div className="pt-24 flex flex-col gap-12">
+          <ListingSection
+            title="Nơi lưu trú tại Thành phố Hồ Chí Minh"
+            listings={hcmListings}
+            currentUser={currentUser}
+          />
+
+          <ListingSection
+            title="Nơi lưu trú tại Hà Nội"
+            listings={haNoiListings}
+            currentUser={currentUser}
+          />
+
+          <ListingSection
+            title="Nơi lưu trú tại Đà Nẵng"
+            listings={daNangListings}
+            currentUser={currentUser}
+          />
+
+          <ListingSection
+            title="Nơi lưu trú tại Huế"
+            listings={hueListings}
+            currentUser={currentUser}
+          />
         </div>
       </Container>
     </ClientOnly>

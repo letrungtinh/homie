@@ -61,7 +61,10 @@ export async function PUT(
     roomCount,
     bathroomCount,
     imageSrc,
+    imageSrcs,
   } = body;
+
+  const images = Array.isArray(imageSrcs) ? imageSrcs : [];
 
   if (
     !title ||
@@ -71,10 +74,13 @@ export async function PUT(
     !location?.value ||
     !guestCount ||
     !roomCount ||
-    !bathroomCount ||
-    !imageSrc
+    !bathroomCount
   ) {
     return new NextResponse("Thiếu thông tin", { status: 400 });
+  }
+
+  if (images.length === 0 && !imageSrc) {
+    return new NextResponse("Vui lòng tải lên ít nhất 1 ảnh", { status: 400 });
   }
 
   const updatedListing = await prisma.listing.updateMany({
@@ -91,7 +97,8 @@ export async function PUT(
       guestCount: Number(guestCount),
       roomCount: Number(roomCount),
       bathroomCount: Number(bathroomCount),
-      imageSrc,
+      imageSrc: images[0] || imageSrc,
+      imageSrcs: images.length > 0 ? images : [imageSrc],
     },
   });
 

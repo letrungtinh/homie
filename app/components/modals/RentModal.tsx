@@ -49,7 +49,7 @@ const RentModal = () => {
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
-      imageSrc: "",
+      imageSrcs: [],
       price: 100000,
       title: "",
       description: "",
@@ -61,14 +61,14 @@ const RentModal = () => {
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
-  const imageSrc = watch("imageSrc");
+  const imageSrcs = watch("imageSrcs");
 
   const Map = useMemo(
     () =>
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location],
+    [location]
   );
 
   const setCustomValue = (id: string, value: any) => {
@@ -103,8 +103,8 @@ const RentModal = () => {
         setStep(STEPS.CATEGORY);
         rentModal.onClose();
       })
-      .catch(() => {
-        toast.error("Có lỗi xảy ra.");
+      .catch((error) => {
+        toast.error(error.response?.data || "Có lỗi xảy ra.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -133,6 +133,7 @@ const RentModal = () => {
         title="Chỗ ở của bạn thuộc loại nào?"
         subtitle="Hãy chọn danh mục phù hợp nhất với chỗ ở của bạn."
       />
+
       <div
         className="
           grid 
@@ -164,10 +165,12 @@ const RentModal = () => {
           title="Chỗ ở của bạn nằm ở đâu?"
           subtitle="Giúp khách tìm thấy địa điểm của bạn."
         />
+
         <LocationSelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         />
+
         <Map center={location?.latlng} />
       </div>
     );
@@ -214,11 +217,13 @@ const RentModal = () => {
       <div className="flex flex-col gap-8">
         <Heading
           title="Tải lên hình ảnh chỗ ở"
-          subtitle="Hình ảnh đẹp sẽ giúp khách hàng quan tâm hơn!"
+          subtitle="Ảnh đầu tiên sẽ được dùng làm ảnh bìa chính."
         />
+
         <ImageUpload
-          onChange={(value) => setCustomValue("imageSrc", value)}
-          value={imageSrc}
+          onChange={(value) => setCustomValue("imageSrcs", value)}
+          value={imageSrcs}
+          maxImages={6}
         />
       </div>
     );
@@ -231,6 +236,7 @@ const RentModal = () => {
           title="Bạn sẽ mô tả chỗ ở của mình như thế nào?"
           subtitle="Ngắn gọn, súc tích và dễ hiểu là tốt nhất!"
         />
+
         <Input
           id="title"
           label="Tiêu đề"
@@ -239,7 +245,9 @@ const RentModal = () => {
           errors={errors}
           required
         />
+
         <hr />
+
         <Textarea
           id="description"
           label="Mô tả"
@@ -259,6 +267,7 @@ const RentModal = () => {
           title="Đặt giá cho chỗ ở của bạn"
           subtitle="Bạn muốn cho thuê với mức giá bao nhiêu mỗi đêm?"
         />
+
         <Input
           id="price"
           label="Giá thuê"
@@ -269,7 +278,6 @@ const RentModal = () => {
           errors={errors}
           required
         />
-      
       </div>
     );
   }

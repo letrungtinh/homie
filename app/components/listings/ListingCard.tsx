@@ -41,6 +41,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
   const location = getByValue(data.locationValue);
 
+  const coverImage = data.imageSrcs?.[0] || data.imageSrc || "/images/placeholder.jpg";
+
   const handleCancel = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
@@ -92,10 +94,10 @@ const ListingCard: React.FC<ListingCardProps> = ({
       className="col-span-1 cursor-pointer group"
     >
       <div className="flex flex-col gap-2 w-full">
-        <div className="aspect-square w-full relative overflow-hidden rounded-xl">
+        <div className="aspect-square w-full relative overflow-hidden rounded-xl bg-neutral-200">
           <Image
             alt="Listing"
-            src={data.imageSrc}
+            src={coverImage}
             className="object-cover h-full w-full group-hover:scale-110 transition"
             fill
           />
@@ -103,6 +105,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
           <div className="absolute top-3 right-3">
             <HeartButton listingId={data.id} currentUser={currentUser} />
           </div>
+
+          {data.imageSrcs && data.imageSrcs.length > 1 && (
+            <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              {data.imageSrcs.length} ảnh
+            </div>
+          )}
         </div>
 
         <div className="font-semibold text-lg">
@@ -122,7 +130,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         </div>
 
         {(onAction || onSecondaryAction) && (
-          <div className="flex flex-row gap-2 " >
+          <div className="flex flex-row gap-2">
             {onSecondaryAction && secondaryActionLabel && (
               <Button
                 disabled={disabled}

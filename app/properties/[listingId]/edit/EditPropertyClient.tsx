@@ -9,7 +9,6 @@ import { useMemo, useState } from "react";
 
 import { SafeListing } from "@/app/types";
 import Container from "@/app/components/Container";
-import Heading from "@/app/components/Heading";
 import Counter from "@/app/components/inputs/Counter";
 import CategoryInput from "@/app/components/inputs/CategoryInput";
 import { categories } from "@/app/components/navbar/Categories";
@@ -18,10 +17,22 @@ import Input from "@/app/components/inputs/Input";
 import LocationSelect from "@/app/components/inputs/LocationSelect";
 import Button from "@/app/components/Button";
 import Textarea from "@/app/components/inputs/Textarea";
+import useVietnamLocations from "@/app/hooks/useVietnamLocations";
 
 const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
   const router = useRouter();
+  const { getByValue } = useVietnamLocations();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const currentLocation = getByValue(listing.locationValue);
+
+  const defaultImages =
+    listing.imageSrcs && listing.imageSrcs.length > 0
+      ? listing.imageSrcs
+      : listing.imageSrc
+      ? [listing.imageSrc]
+      : [];
 
   const {
     register,
@@ -32,14 +43,14 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
   } = useForm<FieldValues>({
     defaultValues: {
       category: listing.category,
-      location: {
+      location: currentLocation || {
         value: listing.locationValue,
         label: listing.locationValue,
       },
       guestCount: listing.guestCount,
       roomCount: listing.roomCount,
       bathroomCount: listing.bathroomCount,
-      imageSrc: listing.imageSrc,
+      imageSrcs: defaultImages,
       price: listing.price,
       title: listing.title,
       description: listing.description,
@@ -51,14 +62,14 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
-  const imageSrc = watch("imageSrc");
+  const imageSrcs = watch("imageSrcs");
 
   const Map = useMemo(
     () =>
       dynamic(() => import("@/app/components/Map"), {
         ssr: false,
       }),
-    [location]
+    []
   );
 
   const setCustomValue = (id: string, value: any) => {
@@ -79,8 +90,8 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
         router.push("/properties");
         router.refresh();
       })
-      .catch(() => {
-        toast.error("Có lỗi xảy ra.");
+      .catch((error) => {
+        toast.error(error.response?.data || "Có lỗi xảy ra.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -90,56 +101,51 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
   return (
     <Container>
       <div className="max-w-screen-lg mx-auto pb-20">
-        <Heading
-          title="Sửa chỗ ở"
-          subtitle="Cập nhật thông tin chỗ ở của bạn"
-        />
+        <div className="pt-10 pb-6">
+          <h1 className="text-3xl font-bold">Sửa chỗ ở</h1>
+          <p className="text-neutral-500 mt-2">
+            Cập nhật thông tin chỗ ở của bạn
+          </p>
+        </div>
 
-        <div className="mt-10 flex flex-col gap-10">
-          <div className="flex flex-col gap-8">
-            <Heading
-              title="Danh mục chỗ ở"
-              subtitle="Chọn loại chỗ ở phù hợp"
-            />
+        <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6 md:p-8 flex flex-col gap-10">
+          <section className="flex flex-col gap-5">
+            <h2 className="text-xl font-semibold">Danh mục</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {categories.map((item) => (
                 <CategoryInput
                   key={item.label}
-                  onClick={(category) =>
-                    setCustomValue("category", category)
-                  }
+                  onClick={(category) => setCustomValue("category", category)}
                   selected={category === item.label}
                   label={item.label}
                   icon={item.icon}
                 />
               ))}
             </div>
-          </div>
+          </section>
 
           <hr />
 
-          <div className="flex flex-col gap-8">
-            <Heading
-              title="Vị trí chỗ ở"
-              subtitle="Cập nhật địa điểm của chỗ ở"
-            />
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-semibold">Vị trí</h2>
 
-            <LocationSelect
-              value={location}
-              onChange={(value) => setCustomValue("location", value)}
-            />
+              <LocationSelect
+                value={location}
+                onChange={(value) => setCustomValue("location", value)}
+              />
+            </div>
 
-            <Map center={location?.latlng} />
-          </div>
+            <div className="h-[300px] rounded-xl overflow-hidden">
+              <Map center={location?.latlng} />
+            </div>
+          </section>
 
           <hr />
 
-          <div className="flex flex-col gap-8">
-            <Heading
-              title="Thông tin cơ bản"
-              subtitle="Cập nhật số khách, phòng ngủ và phòng tắm"
-            />
+          <section className="flex flex-col gap-6">
+            <h2 className="text-xl font-semibold">Thông tin cơ bản</h2>
 
             <Counter
               onChange={(value) => setCustomValue("guestCount", value)}
@@ -165,27 +171,26 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
               title="Phòng tắm"
               subTitle="Chỗ ở của bạn có bao nhiêu phòng tắm?"
             />
-          </div>
+          </section>
 
           <hr />
 
-          <div className="flex flex-col gap-8">
-            <Heading
-              title="Hình ảnh chỗ ở"
-              subtitle="Cập nhật hình ảnh đại diện cho chỗ ở"
-            />
+          <section className="flex flex-col gap-5">
+            <h2 className="text-xl font-semibold">Hình ảnh</h2>
+            <p className="text-sm text-neutral-500">
+              Ảnh đầu tiên sẽ được dùng làm ảnh bìa chính.
+            </p>
 
             <ImageUpload
-              onChange={(value) => setCustomValue("imageSrc", value)}
-              value={imageSrc}
+              onChange={(value) => setCustomValue("imageSrcs", value)}
+              value={imageSrcs}
+              maxImages={6}
             />
-          </div>
+          </section>
 
           <hr />
 
-          <div className="flex flex-col gap-8">
-     
-
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
               id="title"
               label="Tiêu đề"
@@ -194,20 +199,6 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
               errors={errors}
               required
             />
-
-            <Textarea
-              id="description"
-              label="Mô tả"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-          </div>
-
-          <hr />
-
-          <div className="flex flex-col gap-8">
 
             <Input
               id="price"
@@ -219,9 +210,20 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
               errors={errors}
               required
             />
-          </div>
 
-          <div className="flex flex-row gap-4">
+            <div className="md:col-span-2">
+              <Textarea
+                id="description"
+                label="Mô tả"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+              />
+            </div>
+          </section>
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-2">
             <Button
               label="Hủy"
               outline
