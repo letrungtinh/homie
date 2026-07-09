@@ -17,6 +17,7 @@ import ImageUpload from "@/app/components/inputs/ImageUpload";
 import Input from "@/app/components/inputs/Input";
 import LocationSelect from "@/app/components/inputs/LocationSelect";
 import Button from "@/app/components/Button";
+import Textarea from "@/app/components/inputs/Textarea";
 
 const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
   const router = useRouter();
@@ -183,10 +184,7 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
           <hr />
 
           <div className="flex flex-col gap-8">
-            <Heading
-              title="Tiêu đề và mô tả"
-              subtitle="Cập nhật nội dung hiển thị cho khách"
-            />
+     
 
             <Input
               id="title"
@@ -197,7 +195,7 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
               required
             />
 
-            <Input
+            <Textarea
               id="description"
               label="Mô tả"
               disabled={isLoading}
@@ -210,10 +208,6 @@ const EditPropertyClient = ({ listing }: { listing: SafeListing }) => {
           <hr />
 
           <div className="flex flex-col gap-8">
-            <Heading
-              title="Giá thuê"
-              subtitle="Cập nhật giá thuê mỗi đêm"
-            />
 
             <Input
               id="price"

@@ -17,6 +17,7 @@ import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import LocationSelect from "../inputs/LocationSelect";
+import Textarea from "../inputs/Textarea";
 
 enum STEPS {
   CATEGORY = 0,
@@ -239,7 +240,7 @@ const RentModal = () => {
           required
         />
         <hr />
-        <Input
+        <Textarea
           id="description"
           label="Mô tả"
           disabled={isLoading}
