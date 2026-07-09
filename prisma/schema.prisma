@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,6 +21,10 @@ model User {
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
+
+  conversationsAsGuest Conversation[] @relation("GuestConversations")
+  conversationsAsHost  Conversation[] @relation("HostConversations")
+  messages             Message[]      @relation("SentMessages")
 }
 
 model Account {
@@ -63,7 +62,8 @@ model Listing {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  reservations Reservation[]
+  reservations  Reservation[]
+  conversations Conversation[]
 }
 
 model Reservation {
@@ -77,4 +77,33 @@ model Reservation {
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  guestId   String   @db.ObjectId
+  hostId    String   @db.ObjectId
+  listingId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  guest   User    @relation("GuestConversations", fields: [guestId], references: [id], onDelete: Cascade)
+  host    User    @relation("HostConversations", fields: [hostId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  messages Message[]
+
+  @@unique([guestId, hostId, listingId])
+}
+
+model Message {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String   @db.ObjectId
+  senderId       String   @db.ObjectId
+  body           String
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 }

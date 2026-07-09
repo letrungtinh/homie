@@ -49,6 +49,13 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
     [router]
   );
 
+  const onEdit = useCallback(
+    (id: string) => {
+      router.push(`/properties/${id}/edit`);
+    },
+    [router]
+  );
+
   return (
     <Container>
       <Heading
@@ -65,6 +72,9 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
             onAction={onCancel}
             disabled={deletingId === listing.id}
             actionLabel="Xóa chỗ ở"
+            secondaryActionId={listing.id}
+            onSecondaryAction={onEdit}
+            secondaryActionLabel="Sửa chỗ ở"
             currentUser={currentUser}
           />
         ))}

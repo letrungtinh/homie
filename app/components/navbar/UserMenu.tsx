@@ -95,11 +95,20 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
             right-0
             top-14
             text-sm
+            z-50
           "
         >
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
+                <MenuItem
+                  onClick={() => {
+                    router.push("/messages");
+                    setIsOpen(false);
+                  }}
+                  label="Tin nhắn"
+                />
+
                 <MenuItem
                   onClick={() => {
                     router.push("/trips");
@@ -144,6 +153,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
 
                 <MenuItem
                   onClick={() => {
+                    setIsOpen(false);
                     signOut();
                   }}
                   label="Đăng xuất"
@@ -151,9 +161,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
               </>
             ) : (
               <>
-                <MenuItem onClick={loginModal.onOpen} label="Đăng nhập" />
+                <MenuItem
+                  onClick={() => {
+                    loginModal.onOpen();
+                    setIsOpen(false);
+                  }}
+                  label="Đăng nhập"
+                />
 
-                <MenuItem onClick={registerModal.onOpen} label="Đăng ký" />
+                <MenuItem
+                  onClick={() => {
+                    registerModal.onOpen();
+                    setIsOpen(false);
+                  }}
+                  label="Đăng ký"
+                />
               </>
             )}
           </div>

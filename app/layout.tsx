@@ -15,7 +15,7 @@ const font = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Homiee",
-  description: "We are Homiee",
+  description: "Homiee – Có nơi để ở, có bạn để đi",
 };
 
 export default async function RootLayout({
@@ -34,7 +34,6 @@ export default async function RootLayout({
           <RentModal />
           <RegisterModal />
           <LoginModal />
-
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-28 ">{children}</div>

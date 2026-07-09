@@ -18,6 +18,10 @@ interface ListingCardProps {
   actionLabel?: string;
   actionId?: string;
   currentUser?: SafeUser | null;
+
+  secondaryActionLabel?: string;
+  secondaryActionId?: string;
+  onSecondaryAction?: (id: string) => void;
 }
 
 const ListingCard: React.FC<ListingCardProps> = ({
@@ -28,6 +32,9 @@ const ListingCard: React.FC<ListingCardProps> = ({
   actionLabel,
   actionId = "",
   currentUser,
+  secondaryActionLabel,
+  secondaryActionId = "",
+  onSecondaryAction,
 }) => {
   const router = useRouter();
   const { getByValue } = useVietnamLocations();
@@ -43,6 +50,17 @@ const ListingCard: React.FC<ListingCardProps> = ({
       onAction?.(actionId);
     },
     [onAction, actionId, disabled]
+  );
+
+  const handleSecondaryAction = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+
+      if (disabled) return;
+
+      onSecondaryAction?.(secondaryActionId);
+    },
+    [onSecondaryAction, secondaryActionId, disabled]
   );
 
   const price = useMemo(() => {
@@ -103,13 +121,26 @@ const ListingCard: React.FC<ListingCardProps> = ({
           {!reservation && <div className="font-light">/ đêm</div>}
         </div>
 
-        {onAction && actionLabel && (
-          <Button
-            disabled={disabled}
-            small
-            label={actionLabel}
-            onClick={handleCancel}
-          />
+        {(onAction || onSecondaryAction) && (
+          <div className="flex flex-row gap-2">
+            {onSecondaryAction && secondaryActionLabel && (
+              <Button
+                disabled={disabled}
+                small
+                label={secondaryActionLabel}
+                onClick={handleSecondaryAction}
+              />
+            )}
+
+            {onAction && actionLabel && (
+              <Button
+                disabled={disabled}
+                small
+                label={actionLabel}
+                onClick={handleCancel}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>

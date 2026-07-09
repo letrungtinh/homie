@@ -3,35 +3,53 @@ import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 
 export async function POST(request: Request) {
-   const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
-   if (!currentUser) {
-      return NextResponse.error();
-   }
+  if (!currentUser) {
+    return new NextResponse("Chưa đăng nhập", { status: 401 });
+  }
 
-   const body = await request.json();
+  const body = await request.json();
 
-   const { listingId, startDate, endDate, totalPrice } = body;
+  const { listingId, startDate, endDate, totalPrice } = body;
 
-   if (!listingId || !startDate || !endDate || !totalPrice) {
-      return NextResponse.error();
-   }
+  if (!listingId || !startDate || !endDate || !totalPrice) {
+    return new NextResponse("Thiếu dữ liệu đặt phòng", { status: 400 });
+  }
 
-   const listingAndReservation = await prisma.listing.update({
-      where: {
-         id: listingId,
+  const conflict = await prisma.reservation.findFirst({
+    where: {
+      listingId,
+      startDate: {
+        lte: new Date(endDate),
       },
-      data: {
-         reservations: {
-            create: {
-               userId: currentUser.id,
-               startDate,
-               endDate,
-               totalPrice,
-            },
-         },
+      endDate: {
+        gte: new Date(startDate),
       },
-   });
+    },
+  });
 
-   return NextResponse.json(listingAndReservation);
+  if (conflict) {
+    return new NextResponse("Phòng đã có người đặt trong thời gian này", {
+      status: 409,
+    });
+  }
+
+  const listingAndReservation = await prisma.listing.update({
+    where: {
+      id: listingId,
+    },
+    data: {
+      reservations: {
+        create: {
+          userId: currentUser.id,
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+          totalPrice,
+        },
+      },
+    },
+  });
+
+  return NextResponse.json(listingAndReservation);
 }

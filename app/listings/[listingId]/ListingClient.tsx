@@ -1,6 +1,7 @@
 "use client";
 
 import Container from "@/app/components/Container";
+import Button from "@/app/components/Button";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
@@ -37,6 +38,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isMessageLoading, setIsMessageLoading] = useState(false);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const disabledDates = useMemo(() => {
@@ -61,7 +63,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
     const dayCount = differenceInCalendarDays(
       dateRange.endDate,
-      dateRange.startDate
+      dateRange.startDate,
     );
 
     if (dayCount && listing.price) {
@@ -70,6 +72,32 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
     return listing.price;
   }, [dateRange.startDate, dateRange.endDate, listing.price]);
+
+  const onContactHost = useCallback(() => {
+    if (!currentUser) {
+      return loginModal.onOpen();
+    }
+
+    setIsMessageLoading(true);
+
+    axios
+      .post("/api/conversations", {
+        listingId: listing.id,
+      })
+      .then((response) => {
+        router.push(`/messages/${response.data.id}`);
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data?.message || "Có lỗi xảy ra!");
+        } else {
+          toast.error("Có lỗi xảy ra!");
+        }
+      })
+      .finally(() => {
+        setIsMessageLoading(false);
+      });
+  }, [currentUser, loginModal, listing.id, router]);
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -88,8 +116,8 @@ const ListingClient: React.FC<ListingClientProps> = ({
     const isBlocked = selectedDates.some((selectedDate) =>
       disabledDates.some(
         (disabledDate) =>
-          selectedDate.toDateString() === disabledDate.toDateString()
-      )
+          selectedDate.toDateString() === disabledDate.toDateString(),
+      ),
     );
 
     if (isBlocked) {
@@ -159,15 +187,24 @@ const ListingClient: React.FC<ListingClientProps> = ({
             />
 
             <div className="order-first mb-10 md:order-last md:col-span-3">
-              <ListingReservation
-                price={listing.price}
-                totalPrice={totalPrice}
-                onChangeDate={(value) => setDateRange(value)}
-                dateRange={dateRange}
-                onSubmit={onCreateReservation}
-                disabled={isLoading}
-                disabledDates={disabledDates}
-              />
+              <div className="flex flex-col gap-4">
+                <Button
+                  label="Liên hệ chủ phòng"
+                  onClick={onContactHost}
+                  disabled={isMessageLoading}
+                  outline
+                />
+
+                <ListingReservation
+                  price={listing.price}
+                  totalPrice={totalPrice}
+                  onChangeDate={(value) => setDateRange(value)}
+                  dateRange={dateRange}
+                  onSubmit={onCreateReservation}
+                  disabled={isLoading}
+                  disabledDates={disabledDates}
+                />
+              </div>
             </div>
           </div>
         </div>
