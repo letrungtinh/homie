@@ -122,11 +122,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
         </div>
 
         {(onAction || onSecondaryAction) && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 " >
             {onSecondaryAction && secondaryActionLabel && (
               <Button
                 disabled={disabled}
                 small
+                outline
                 label={secondaryActionLabel}
                 onClick={handleSecondaryAction}
               />
